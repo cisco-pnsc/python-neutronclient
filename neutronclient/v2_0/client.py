@@ -189,6 +189,14 @@ class Client(object):
     associate_pool_health_monitors_path = "/lb/pools/%s/health_monitors"
     disassociate_pool_health_monitors_path = (
         "/lb/pools/%(pool)s/health_monitors/%(health_monitor)s")
+    associate_vip_ssl_policy_path = "/lb/vips/%s/ssl_associations"
+    disassociate_vip_ssl_policy_path = "/lb/vips/%(vip)s/ssl_associations/%(ssl_policy)s"
+    ssl_policies_path = "/lb/ssl_policies"
+    ssl_policy_path = "/lb/ssl_policies/%s"
+    ssl_certificates_path = "/lb/ssl_certificates"
+    ssl_certificate_path = "/lb/ssl_certificates/%s"
+    ssl_trusted_certificates_path = "/lb/ssl_trusted_certificates"
+    ssl_trusted_certificate_path = "/lb/ssl_trusted_certificates/%s"
     qos_queues_path = "/qos-queues"
     qos_queue_path = "/qos-queues/%s"
     agents_path = "/agents"
@@ -222,6 +230,8 @@ class Client(object):
     firewall_policy_remove_path = "/fw/firewall_policies/%s/remove_rule"
     firewalls_path = "/fw/firewalls"
     firewall_path = "/fw/firewalls/%s"
+    device_templates_path = "/servicevm/device-templates"
+    device_template_path = "/servicevm/device-templates/%s"
 
     # API has no way to report plurals, so we have to hard code them
     EXTED_PLURALS = {'routers': 'router',
@@ -238,13 +248,20 @@ class Client(object):
                      'pools': 'pool',
                      'members': 'member',
                      'health_monitors': 'health_monitor',
+                     'ssl_policies': 'ssl_policy',
+                     'ssl_certificates': 'ssl_certificate',
+                     'ssl_trusted_certificates': 'ssl_trusted_certificate',
+                     'ssl_associations': 'ssl_associate',
                      'quotas': 'quota',
                      'service_providers': 'service_provider',
                      'firewall_rules': 'firewall_rule',
                      'firewall_policies': 'firewall_policy',
                      'firewalls': 'firewall',
                      'metering_labels': 'metering_label',
-                     'metering_label_rules': 'metering_label_rule'
+                     'metering_label_rules': 'metering_label_rule',
+                     'service_deploy_policies': 'service_deploy_policy',
+                     'device_templates': 'device_template',
+                     'device-templates': 'device-template',
                      }
     # 8192 Is the default max URI len for eventlet.wsgi.server
     MAX_URI_LEN = 8192
@@ -775,6 +792,101 @@ class Client(object):
         path = (self.disassociate_pool_health_monitors_path %
                 {'pool': pool, 'health_monitor': health_monitor})
         return self.delete(path)
+    @APIParamsCall
+    def list_ssl_policies(self, retrieve_all=True, **_params):
+        """Fetches a list of all load balancer health monitors for a tenant."""
+        # Pass filters in "params" argument to do_request
+        return self.list('ssl_policies', self.ssl_policies_path,
+                         retrieve_all, **_params)
+
+    @APIParamsCall
+    def show_ssl_policy(self, ssl_policy, **_params):
+        """Fetches information of a certain load balancer health monitor."""
+        return self.get(self.ssl_policy_path % (ssl_policy),
+                        params=_params)
+
+    @APIParamsCall
+    def create_ssl_policy(self, body=None):
+        """Creates a new load balancer health monitor."""
+        return self.post(self.ssl_policies_path, body=body)
+
+    @APIParamsCall
+    def update_ssl_policy(self, ssl_policy, body=None):
+        """Updates a load balancer health monitor."""
+        return self.put(self.ssl_policy_path % (ssl_policy), body=body)
+
+    @APIParamsCall
+    def delete_ssl_policy(self, ssl_policy):
+        """Deletes the specified load balancer health monitor."""
+        return self.delete(self.ssl_policy_path % (ssl_policy))
+    @APIParamsCall
+    def list_ssl_certificates(self, retrieve_all=True, **_params):
+        """Fetches a list of all load balancer health monitors for a tenant."""
+        # Pass filters in "params" argument to do_request
+        return self.list('ssl_certificates', self.ssl_certificates_path,
+                         retrieve_all, **_params)
+
+
+    @APIParamsCall
+    def show_ssl_certificate(self, ssl_certificate, **_params):
+        """Fetches information of a certain load balancer health monitor."""
+        return self.get(self.ssl_certificate_path % (ssl_certificate),
+                        params=_params)
+
+    @APIParamsCall
+    def create_ssl_certificate(self, body=None):
+        """Creates a new load balancer health monitor."""
+        return self.post(self.ssl_certificates_path, body=body)
+
+    @APIParamsCall
+    def update_ssl_certificate(self, ssl_certificate, body=None):
+        """Updates a load balancer health monitor."""
+        return self.put(self.ssl_certificate_path % (ssl_certificate), body=body)
+
+    @APIParamsCall
+    def delete_ssl_certificate(self, ssl_certificate):
+        """Deletes the specified load balancer health monitor."""
+        return self.delete(self.ssl_certificate_path % (ssl_certificate))
+
+    @APIParamsCall
+    def list_ssl_trusted_certificates(self, retrieve_all=True, **_params):
+        """Fetches a list of all load balancer health monitors for a tenant."""
+        # Pass filters in "params" argument to do_request
+        return self.list('ssl_trusted_certificates', self.ssl_trusted_certificates_path,
+                         retrieve_all, **_params)
+
+    @APIParamsCall
+    def show_ssl_trusted_certificate(self, ssl_trusted_certificate, **_params):
+        """Fetches information of a certain load balancer health monitor."""
+        return self.get(self.ssl_trusted_certificate_path % (ssl_trusted_certificate),
+                        params=_params)
+
+    @APIParamsCall
+    def create_ssl_trusted_certificate(self, body=None):
+        """Creates a new load balancer health monitor."""
+        return self.post(self.ssl_trusted_certificates_path, body=body)
+
+    @APIParamsCall
+    def update_ssl_trusted_certificate(self, ssl_trusted_certificate, body=None):
+        """Updates a load balancer health monitor."""
+        return self.put(self.ssl_trusted_certificate_path % (ssl_trusted_certificate), body=body)
+
+    @APIParamsCall
+    def delete_ssl_trusted_certificate(self, ssl_trusted_certificate):
+        """Deletes the specified load balancer health monitor."""
+        return self.delete(self.ssl_trusted_certificate_path % (ssl_trusted_certificate))
+
+    @APIParamsCall
+    def create_ssl_policy_association(self, vip, body=None):
+        """Creates a new load balancer health monitor."""
+        return self.post(self.associate_vip_ssl_policy_path% (vip), body=body)
+
+    @APIParamsCall
+    def delete_ssl_policy_association(self, vip, ssl_policy):
+        """Creates a new load balancer health monitor."""
+        path = (self.disassociate_vip_ssl_policy_path %
+                {'vip': vip, 'ssl_policy': ssl_policy})
+        return self.delete(path)
 
     @APIParamsCall
     def create_qos_queue(self, body=None):
@@ -1138,6 +1250,36 @@ class Client(object):
         """Fetches information of a certain metering label rule."""
         return self.get(self.metering_label_rule_path %
                         (metering_label_rule), params=_params)
+    @APIParamsCall
+    def list_device_templates(self, retrieve_all=True, **_params):
+        """Fetches a list of all device templates for a tenant."""
+        # Pass filters in "params" argument to do_request
+
+        return self.list('device_templates', self.device_templates_path,
+                         retrieve_all, **_params)
+
+    @APIParamsCall
+    def show_device_template(self, device_template, **_params):
+        """Fetches information of a certain device template."""
+        return self.get(self.device_template_path % (device_template),
+                        params=_params)
+
+    @APIParamsCall
+    def create_device_template(self, body=None):
+        """Creates a new device template."""
+        return self.post(self.device_templates_path, body=body)
+
+    @APIParamsCall
+    def update_device_template(self, device_template, body=None):
+        """Updates a device template."""
+        return self.put(self.device_template_path % (device_template),
+                        body=body)
+
+    @APIParamsCall
+    def delete_device_template(self, device_template):
+        """Deletes the specified device template."""
+        return self.delete(self.device_template_path % (device_template))
+
 
     def __init__(self, **kwargs):
         """Initialize a new client for the Neutron v2.0 API."""

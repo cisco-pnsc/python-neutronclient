@@ -26,6 +26,7 @@ import sys
 from cliff import app
 from cliff import commandmanager
 
+from neutronclient.neutron import v2_0 as neutronV20
 from neutronclient.common import clientmanager
 from neutronclient.common import exceptions as exc
 from neutronclient.common import utils
@@ -41,6 +42,11 @@ from neutronclient.neutron.v2_0.lb import healthmonitor as lb_healthmonitor
 from neutronclient.neutron.v2_0.lb import member as lb_member
 from neutronclient.neutron.v2_0.lb import pool as lb_pool
 from neutronclient.neutron.v2_0.lb import vip as lb_vip
+from neutronclient.neutron.v2_0.lb import sslpolicy as lb_ssl_policy
+from neutronclient.neutron.v2_0.lb import sslcertificate as lb_ssl_certificate
+from neutronclient.neutron.v2_0.lb import ssltrustedcertificate as lb_ssl_trusted_certificate
+from neutronclient.neutron.v2_0.lb import sslassociation as lb_ssl_association
+from neutronclient.neutron.v2_0.servicevm import devicetemplate
 from neutronclient.neutron.v2_0 import metering
 from neutronclient.neutron.v2_0 import network
 from neutronclient.neutron.v2_0 import networkprofile
@@ -166,6 +172,29 @@ COMMAND_V2 = {
     'lb-healthmonitor-disassociate': (
         lb_healthmonitor.DisassociateHealthMonitor
     ),
+    'lb-ssl-policy-list': lb_ssl_policy.ListSslPolicy,
+    'lb-ssl-policy-show': lb_ssl_policy.ShowSslPolicy,
+    'lb-ssl-policy-create': lb_ssl_policy.CreateSslPolicy,
+    'lb-ssl-policy-update': lb_ssl_policy.UpdateSslPolicy,
+    'lb-ssl-policy-delete': lb_ssl_policy.DeleteSslPolicy,
+    'lb-ssl-policy-associate-show': lb_ssl_association.ShowSslAssociation,
+    'lb-ssl-policy-associate': lb_ssl_association.AssociateSslPolicy,
+    'lb-ssl-policy-disassociate': lb_ssl_association.DisassociateSslPolicy,
+    'lb-ssl-certificate-list': lb_ssl_certificate.ListSslCertificate,
+    'lb-ssl-certificate-show': lb_ssl_certificate.ShowSslCertificate,
+    'lb-ssl-certificate-create': lb_ssl_certificate.CreateSslCertificate,
+    'lb-ssl-certificate-update': lb_ssl_certificate.UpdateSslCertificate,
+    'lb-ssl-certificate-delete': lb_ssl_certificate.DeleteSslCertificate,
+    'lb-ssl-trusted-certificate-list': lb_ssl_trusted_certificate.ListSslTrustedCertificate,
+    'lb-ssl-trusted-certificate-show': lb_ssl_trusted_certificate.ShowSslTrustedCertificate,
+    'lb-ssl-trusted-certificate-create': lb_ssl_trusted_certificate.CreateSslTrustedCertificate,
+    'lb-ssl-trusted-certificate-update': lb_ssl_trusted_certificate.UpdateSslTrustedCertificate,
+    'lb-ssl-trusted-certificate-delete': lb_ssl_trusted_certificate.DeleteSslTrustedCertificate,
+    'service-deploy-policy-list': devicetemplate.ListDeviceTemplate,
+    'service-deploy-policy-show': devicetemplate.ShowDeviceTemplate,
+    'service-deploy-policy-create': devicetemplate.CreateDeviceTemplate,
+    'service-deploy-policy-update': devicetemplate.UpdateDeviceTemplate,
+    'service-deploy-policy-delete': devicetemplate.DeleteDeviceTemplate,
     'queue-create': qos_queue.CreateQoSQueue,
     'queue-delete': qos_queue.DeleteQoSQueue,
     'queue-show': qos_queue.ShowQoSQueue,
